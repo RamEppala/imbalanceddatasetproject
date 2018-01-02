@@ -1,0 +1,108 @@
+Machine Learning Project on Imbalanced Data
+
+1. Problem Statement and Hypothesis Generation
+
+Given various features, the aim is to build a predictive model to determine the income level for people in US. The income levels are binned at below 50K and above 50K.
+From the problem statement, it’s evident that this is a binary classification problem.
+
+Hò : There is no significant impact of the variables on the dependent variable.
+
+Ha : There exists a significant impact of the variables on the dependent variable.
+
+2. Data Exploration
+
+For this project, I taken the data set from UCI Machine Learning Repository
+
+load the data into R and look at it closely.
+
+train data has 199523 rows & 41 columns. Test data has 99762 rows and 41 columns. 
+
+Identifying hidden trends
+
+In classification problems, we should also plot numerical variables with dependent variable. This would help us determine the clusters (if exists) of classes 0 and 1.
+
+A dodged bar chart provides more information. In dodged bar chart, we plot the categorical variables & dependent variable adjacent to each other.This would give us enough idea for doing feature engineering.
+
+3. Data Cleaning
+
+Let’s check for missing values in numeric variables.
+
+numeric variables has no missing values. 
+
+While working on numeric variables, a good practice is to check for correlation in numeric variables. caret package offers a convenient way to filter out variables with high correlation.
+
+let’s check for missing values in categorical data. We’ll use base sapply() to find out percentage of missing values per column.
+
+found that some of the variables have ~50% missing values. High proportion of missing value can be attributed to difficulty in data collection.we’ll remove these category levels. A simple subset() function does the trick.
+
+For the rest of missing values, a nicer approach would be to label them as ‘Unavailable’. Imputing missing values on large data sets can be tedious.table’s set() function makes this computation insanely fast.
+
+4. Data Manipulation
+
+Specially, in case of imbalanced classification, we should try our best to shape the data such that we can derive maximum information about minority class.
+
+while working on imbalanced problems, accuracy is considered to be a poor evaluation metrics because:
+
+1.Accuracy is calculated by ratio of correct classifications / incorrect classifications.
+2.This metric would largely tell us how accurate our predictions are on the majority class (since it comprises 94% of values). But, we need to know if we are predicting minority class correctly.In such situations, we should use elements of confusion matrix (Sensitivity,specificity,precision,Recall,F score) 
+
+try to make our data balanced using various techniques such as over sampling, undersampling and SMOTE
+
+these techniques have their own drawbacks such as:
+
+1.undersampling leads to loss of information
+2.oversampling leads to overestimation of minority class
+
+we learn that SMOTE technique outperforms the other two sampling methods(undersampling,oversampling).
+
+Build the model SMOTE data and check final prediction accuracy.
+
+Naive Bayes model predicts 98% of the majority class correctly, but disappoints at minority class prediction (~23%). Tried more techniques(xgboost algorithm,SVM) to improve accuracy.
+
+1.used xgboost algorithm and tried to improve the model.
+
+5 fold cross validation and 5 round random search for parameter tuning. Finally, we’ll build the model using the best tuned parameters.
+
+f_measure : #0.9726374 xgboost has outperformed naive Bayes model’s accuracy 
+
+Until now, model has been making label predictions.Due to imbalanced nature of the data, the threshold of 0.5 will always favor the majority class since the probability of a class 1 is quite low. 
+
+Tried a new technique:
+
+1.Instead of labels, we’ll predict probabilities 
+2.Plot and study the AUC curve
+3.Adjust the threshold for better prediction
+
+Used xgboost for the above technique
+
+1. set threshold as 0.4 
+
+# Sensitivity : 0.9512 
+# Specificity : 0.7228
+
+With 0.4 threshold, model returned better predictions than  previous xgboost model at 0.5 threshold.
+
+2. set threshold as 0.3
+
+# Sensitivity : 0.9458 
+# Specificity : 0.7771
+
+This model has outperformed all models i.e. in other words, this is the best model because 77% of the minority classes have been predicted correctly.
+
+
+SVM: 
+
+Apart from the methods listed above, you can also assign class weights such that the algorithm pays more attention while classifying the class with higher weight.
+
+
+
+
+
+
+
+
+
+
+
+
+
